@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Leaflet Locate Control with Quizzes</title>
+
+    <!-- Leaflet CSS -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+
+    <!-- CSS for Locate Control -->
+    <link rel="stylesheet"
+        href="https://cdn.jsdelivr.net/npm/leaflet.locatecontrol@0.81.1/dist/L.Control.Locate.min.css" />
+
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+        }
+
+        #map {
+            width: 100%;
+            height: 100vh;
+        }
+
+        #scoreboard {
+            position: absolute;
+            bottom: 10px;
+            left: 10px;
+            background: white;
+            padding: 10px;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+            z-index: 1000; /* Ensure the scoreboard is above other elements */
+        }
+    </style>
+</head>
+
+<body>
+
+    <div id="map"></div>
+    <div id="scoreboard">Score: 0</div>
+
+    <!-- Leaflet JS -->
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
+    <!-- JS for Locate Control -->
+    <script src="https://cdn.jsdelivr.net/npm/leaflet.locatecontrol@0.81.1/dist/L.Control.Locate.min.js"></script>
+
+    <script>
+        // Initialize the map
+        var map = L.map('map').setView([-37.8219, 144.9570], 13);
+
+        // OSM layer
+        var osm = L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+        });
+        osm.addTo(map);
+
+        // Array of quiz questions
+        var quizzes = [
+            {
+                location: [-37.7778, 144.8260],
+                question: "What is the capital of Australia?",
+                options: ["Sydney", "Canberra", "Melbourne", "Brisbane"],
+                answer: "Canberra"
+            },
+            {
+                location: [-37.7780, 144.8265],
+                question: "Which is the tallest building in Melbourne?",
+                options: ["Eureka Tower", "Melbourne Central", "Rialto Towers", "ANZ Tower"],
+                answer: "Eureka Tower"
+            },
+            {
+                location: [-37.8191, 144.9626],
+                question: "What is the name of the famous sports stadium in Melbourne?",
+                options: ["MCG", "Eureka Stadium", "Docklands Stadium", "Marvel Stadium"],
+                answer: "MCG"
+            },
+            {
+                location: [-37.8150, 144.9633],
+                question: "Which river flows through Melbourne?",
+                options: ["Yarra River", "Murray River", "Goulburn River", "Maribyrnong River"],
+                answer: "Yarra River"
+            },
+            {
+                location: [-37.8640, 144.9802],
+                question: "What is the famous beach located near Melbourne?",
+                options: ["Bondi Beach", "St Kilda Beach", "Brighton Beach", "Frankston Beach"],
+                answer: "St Kilda Beach"
+            },
+            {
+                location: [-37.8232, 144.9692],
+                question: "Which museum is located in Melbourne?",
+                options: ["National Gallery of Victoria", "Australian Museum", "Queensland Museum", "Powerhouse Museum"],
+                answer: "National Gallery of Victoria"
+            },
+            {
+                location: [-37.8118, 144.9664],
+                question: "What is the name of the iconic shopping street in Melbourne?",
+                options: ["Bourke Street", "George Street", "Queen Street", "Pitt Street"],
+                answer: "Bourke Street"
+            },
+            {
+                location: [-37.8323, 144.9850],
+                question: "Which park is famous for its botanical gardens in Melbourne?",
+                options: ["Royal Botanic Gardens", "Fitzroy Gardens", "Albert Park", "Lygon Street"],
+                answer: "Royal Botanic Gardens"
+            },
+            {
+                location: [-37.8106, 144.9643],
+                question: "What is the name of the Melbourne festival celebrated in spring?",
+                options: ["Melbourne International Comedy Festival", "Melbourne Fringe Festival", "Melbourne International Arts Festival", "Melbourne Cup"],
+                answer: "Melbourne International Arts Festival"
+            },
+            {
+                location: [-37.7982, 144.9580],
+                question: "Which famous market is located in Melbourne?",
+                options: ["Queen Victoria Market", "South Melbourne Market", "Dandenong Market", "Prahran Market"],
+                answer: "Queen Victoria Market"
+            }
+        ];
+
+        // Initialize score
+        var score = 0;
+
+        // Update scoreboard
+        function updateScoreboard() {
+            document.getElementById('scoreboard').innerText = `Score: ${score}`;
+        }
+
+        // Function to create markers with quiz questions
+        quizzes.forEach(quiz => {
+            var marker = L.marker(quiz.location).addTo(map)
+                .bindPopup('Marker Location');
+
+            // Handle user's proximity to the marker
+            marker.on('popupopen', function () {
+                navigator.geolocation.watchPosition(position => {
+                    const { latitude, longitude } = position.coords;
+
+                    // Calculate distance between user's current location and the marker
+                    var userLocation = L.latLng(latitude, longitude);
+                    var markerLocation = marker.getLatLng();
+                    var distance = userLocation.distanceTo(markerLocation); // distance in meters
+
+                    // Display distance and quiz availability in the popup
+                    if (distance <= 50) {
+                        // Quiz HTML
+                        var quizHtml = `
+                        <b>Quiz Time!</b><br>
+                        ${quiz.question}<br>
+                        <form id="quizForm-${quiz.location.join(',')}">
+                            ${quiz.options.map(option => `
+                                <input type="radio" name="quiz" value="${option}">${option}<br>
+                            `).join('')}
+                            <button type="submit">Submit</button>
+                        </form>
+                    `;
+
+                        // Clear previous quiz form and open new quiz
+                        marker.bindPopup(quizHtml).openPopup();
+
+                        // Handle quiz submission
+                        document.getElementById(`quizForm-${quiz.location.join(',')}`).onsubmit = function (e) {
+                            e.preventDefault();
+                            const selectedOption = document.querySelector(`input[name="quiz"]:checked`);
+                            if (selectedOption) {
+                                if (selectedOption.value === quiz.answer) {
+                                    score += 10; // Add 10 points for a correct answer
+                                    alert("Correct! You've earned 10 points.");
+                                } else {
+                                    alert(`Incorrect! Try Again.`);
+                                }
+                                updateScoreboard();
+                            }
+                        };
+                    } else {
+                        marker.bindPopup(`Move closer to take the quiz! You are ${Math.round(distance)} m away.`).openPopup();
+                    }
+                }, error => {
+                    alert('Unable to retrieve your location.');
+                }, {
+                    enableHighAccuracy: true,
+                    maximumAge: 10000,
+                    timeout: 10000
+                });
+            });
+        });
+
+        // Add Locate control to map
+        L.control.locate({
+            position: 'topleft',  // Position of the locate button
+            setView: true,        // Automatically set the map view to the user's location
+            flyTo: true,          // Smooth zoom to the location
+            drawCircle: true,     // Draw a circle around the user's location
+            keepCurrentZoomLevel: false, // Adjust to zoom level specified in setView
+            locateOptions: {
+                enableHighAccuracy: true, // Enable high accuracy
+                watch: true,              // Continuously track the user's location
+                maximumAge: 10000,        // Cache location for 10 seconds
+                timeout: 10000            // Timeout after 10 seconds
+            }
+        }).addTo(map);
+
+    </script>
+
+</body>
+
+</html>
