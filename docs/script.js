@@ -173,15 +173,20 @@ window.onload = function () {
         var radius = e.accuracy / 2; // Radius of the accuracy circle
 
         // Format latitude, longitude, and accuracy to two decimal places
-        var lat = e.latitude.toFixed(2);
-        var lng = e.longitude.toFixed(2);
-        var accuracy = radius.toFixed(2);
+        var lat = e.latitude.toFixed(5);
+        var lng = e.longitude.toFixed(5);
+        var accuracy = radius.toFixed(5);
 
         // Create a new marker and circle for the current location
         currentMarker = L.marker(e.latlng).addTo(map)
             .bindPopup(`You are here!<br>Latitude: ${lat}<br>Longitude: ${lng}<br>Accuracy: ${accuracy} meters`)
-            .openPopup();
 
+        // Add click event to open the popup when the marker is clicked
+        currentMarker.on('click', function () {
+            this.openPopup();
+        });
+
+        // Create a new circle to represent the accuracy of the location
         currentCircle = L.circle(e.latlng, radius).addTo(map);
     });
 
