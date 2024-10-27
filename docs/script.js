@@ -156,14 +156,13 @@ window.onload = function () {
         }
     }).addTo(map);
 
-    // Initialize variables to track marker, circle, and manual close status
-    let currentMarker;
-    let currentCircle;
-    let popupManuallyClosed = false; // Flag to track manual closure of the popup
+    // Marker popup logic
+    var currentMarker, currentCircle;
+    var popupManuallyClosed = false;
 
     // Show latitude, longitude, and accuracy in a popup when location is found
     map.on('locationfound', function (e) {
-        // Clear previous marker and circle if they exist
+        // Clear previous location data if it exists
         if (currentMarker) {
             map.removeLayer(currentMarker);
         }
@@ -180,25 +179,22 @@ window.onload = function () {
 
         // Create a new marker for the current location
         currentMarker = L.marker(e.latlng).addTo(map)
-            .bindPopup(`You are here!<br>Latitude: ${lat}<br>Longitude: ${lng}<br>Accuracy: ${accuracy} meters`, {
-                closeOnClick: false,   // Popup won't close on map click
-                autoClose: false       // Popup won't auto-close when other popups are opened
-            });
+            .bindPopup(`You are here!<br>Latitude: ${lat}<br>Longitude: ${lng}<br>Accuracy: ${accuracy} meters`, { closeOnClick: false, autoClose: false });
 
-        // Open the popup automatically on the first location update if not manually closed
+        // Open the popup automatically on the first location update
         if (!popupManuallyClosed) {
             currentMarker.openPopup();
         }
 
-        // Add an event listener to track manual closure of the popup
+        // Event to set the popup as manually closed when closed by user
         currentMarker.getPopup().on('remove', function () {
-            popupManuallyClosed = true; // Set flag to true if manually closed
+            popupManuallyClosed = true;
         });
 
-        // Add click event to reopen the popup if manually closed and marker is clicked
+        // Add click event to open the popup when the marker is clicked, resetting manual close tracking
         currentMarker.on('click', function () {
             this.openPopup();
-            popupManuallyClosed = false; // Reset flag to allow continuous updates with popup open
+            popupManuallyClosed = false; // Allow the popup to stay open on updates again
         });
 
         // Create a new circle to represent the accuracy of the location
