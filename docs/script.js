@@ -156,13 +156,13 @@ window.onload = function () {
         }
     }).addTo(map);
 
-    // Create variables to store the marker and circle
-    var currentMarker;
-    var currentCircle;
+    // Initialize variables to track marker and circle
+    let currentMarker;
+    let currentCircle;
 
     // Show latitude, longitude, and accuracy in a popup when location is found
     map.on('locationfound', function (e) {
-        // Clear previous location data if it exists
+        // Clear previous marker and circle if they exist
         if (currentMarker) {
             map.removeLayer(currentMarker);
         }
@@ -172,16 +172,22 @@ window.onload = function () {
 
         var radius = e.accuracy / 2; // Radius of the accuracy circle
 
-        // Format latitude, longitude, and accuracy to two decimal places
+        // Format latitude, longitude, and accuracy to five decimal places
         var lat = e.latitude.toFixed(5);
         var lng = e.longitude.toFixed(5);
         var accuracy = radius.toFixed(5);
 
-        // Create a new marker and circle for the current location
+        // Create a new marker for the current location
         currentMarker = L.marker(e.latlng).addTo(map)
-            .bindPopup(`You are here!<br>Latitude: ${lat}<br>Longitude: ${lng}<br>Accuracy: ${accuracy} meters`, { closeOnClick: false });
+            .bindPopup(`You are here!<br>Latitude: ${lat}<br>Longitude: ${lng}<br>Accuracy: ${accuracy} meters`, {
+                closeOnClick: false,   // Popup won't close on map click
+                autoClose: false       // Popup won't auto-close when other popups are opened
+            });
 
-        // Add click event to open the popup when the marker is clicked
+        // Open the popup initially
+        currentMarker.openPopup();
+
+        // Add click event to reopen popup if it was manually closed and marker is clicked
         currentMarker.on('click', function () {
             this.openPopup();
         });
@@ -194,6 +200,7 @@ window.onload = function () {
     map.on('locationerror', function (e) {
         alert(e.message);
     });
+
 
 
     //Ruler
