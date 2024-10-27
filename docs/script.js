@@ -107,7 +107,7 @@ window.onload = function () {
     L.control.scale({
         metric: true,
         imperial: false,
-        position: 'bottomleft'
+        position: 'bottomright'
     }).addTo(map)
 
 
