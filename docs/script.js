@@ -156,22 +156,40 @@ window.onload = function () {
         }
     }).addTo(map);
 
+    // Create variables to store the marker and circle
+    var currentMarker;
+    var currentCircle;
+
     // Show latitude, longitude, and accuracy in a popup when location is found
     map.on('locationfound', function (e) {
+        // Clear previous location data if it exists
+        if (currentMarker) {
+            map.removeLayer(currentMarker);
+        }
+        if (currentCircle) {
+            map.removeLayer(currentCircle);
+        }
+
         var radius = e.accuracy / 2; // Radius of the accuracy circle
 
-        // Create a circle to represent the accuracy of the location
-        L.marker(e.latlng).addTo(map)
-            .bindPopup(`You are here!<br>Latitude: ${e.latitude}<br>Longitude: ${e.longitude}<br>Accuracy: ${radius} meters`)
+        // Format latitude, longitude, and accuracy to two decimal places
+        var lat = e.latitude.toFixed(2);
+        var lng = e.longitude.toFixed(2);
+        var accuracy = radius.toFixed(2);
+
+        // Create a new marker and circle for the current location
+        currentMarker = L.marker(e.latlng).addTo(map)
+            .bindPopup(`You are here!<br>Latitude: ${lat}<br>Longitude: ${lng}<br>Accuracy: ${accuracy} meters`)
             .openPopup();
 
-        L.circle(e.latlng, radius).addTo(map);
+        currentCircle = L.circle(e.latlng, radius).addTo(map);
     });
 
     // Handle location error
     map.on('locationerror', function (e) {
         alert(e.message);
     });
+
 
     //Ruler
     var options = {
