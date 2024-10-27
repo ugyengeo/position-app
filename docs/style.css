@@ -333,14 +333,20 @@ html {
     /* Space between checkbox and label */
 }
 
-@media (max-width: 768px) {
+/* Custom CSS for the ruler control */
+.leaflet-ruler-control .leaflet-bar {
+    width: 300px !important;
+    /* Adjust width */
+    height: 50px !important;
+    /* Adjust height */
+}
 
-    .leaflet-control-attribution,
-    .leaflet-control-scale {
-        display: block !important;
-        font-size: 12px;
-        /* Adjust font size if needed */
-        bottom: 5px;
-        /* Position to avoid overlapping other UI elements */
+/* Responsive styles for mobile devices */
+@media (max-width: 768px) {
+    .leaflet-control-ruler {
+        width: 200px !important;
+        /* Adjust width for mobile */
+        height: 40px !important;
+        /* Adjust height for mobile */
     }
 }
