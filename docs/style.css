@@ -1,0 +1,283 @@
+/* General */
+body, html {
+    height: 100%;
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+    font-family: 'Segoe UI', Tahoma, sans-serif;
+}
+
+/* Map */
+#mapid {
+    width: 100vw;
+    height: 100vh;
+    z-index: 1;
+    position: relative;
+}
+
+/* Game Title */
+#game-title {
+    position: absolute;
+    top: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    background-color: rgba(106, 106, 201, 0.8);
+    color: rgb(18, 18, 18);
+    padding: 5px 5px;
+    border-radius: 10px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.25);
+    font-family: 'Segoe UI', sans-serif;
+    font-size: 1em;
+    font-weight: bold;
+    z-index: 1000;
+    text-align: center;
+    white-space: nowrap;
+    overflow: hidden;
+}
+
+@media (max-width: 768px) {
+    #game-title {
+        font-size: 1.5em;
+        padding: 10px 20px;
+    }
+}
+
+#game-title:hover {
+    background-color: rgba(0, 123, 255, 0.9);
+    transform: translateX(-50%) scale(1.05);
+    transition: transform 0.3s ease, background-color 0.3s ease;
+}
+
+
+/* Button Styles */
+#openModal {
+    position: absolute;
+    top: 10px;
+    right:13px;
+    padding: 1px 2px;
+    font-size: 1em;
+    color: #000000;
+    background-color: #e3e7e9;
+    opacity: 1;
+    border: none;
+    border-radius: 3px;
+    cursor: pointer;
+    z-index: 1000;
+}
+.button-image {
+    width: 40px;
+    height: auto;
+
+}
+
+/* Modal Styles */
+.modal {
+    display: none; /* Hidden by default */
+    position: fixed; /* Stay in place */
+    left: 50%; /* Center the modal horizontally */
+    top: 50%; /* Center the modal vertically */
+    transform: translate(-50%, -50%) scale(0); /* Center and scale down */
+    background-color: rgb(155, 192, 215); /* Modal background */
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+    z-index: 1000; /* On top of other elements */
+    border-radius: 10px;
+    width: 80%;
+    max-width: 500px; /* Width of modal */
+}
+
+/* Show modal when active */
+.modal.active {
+    display: block; /* Show modal */
+    transform: translate(-50%, -50%) scale(1); /* Scale up */
+}
+
+
+/* Overlay Styles */
+#overlay {
+    display: none; /* Hidden by default */
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.5); /* Overlay background */
+    z-index: 999; /* Below modal */
+}
+
+/* Show overlay when active */
+#overlay.active {
+    display: block; /* Show overlay */
+}
+
+/* Modal Header Styles */
+.modal-header {
+    padding: 10px 15px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid #0e0e0e;
+}
+
+.modal .title {
+    font-size: 1.2em;
+    font-weight: bold;
+    color: #0a0b0a;
+    text-align: center;
+    text-shadow: 2px 3px 5px rgba(0, 0, 0, 0.5);
+}
+
+/* Close Button Styles */
+.close-button {
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-size: 1.5em;
+}
+
+/* Modal Body Styles */
+.modal-body {
+    padding: 15px;
+}
+
+/* User Location Marker */
+.location-marker i {
+    color: #dcdfe1;
+    font-size: 0.1px;
+}
+
+/* Animation for Marker */
+.glowing-marker {
+    animation: color-animation 2s infinite alternate; /* Adjust duration as needed */
+}
+
+@keyframes color-animation {
+    0% {
+        fill-opacity: 1; /* Fully opaque */
+        fill: red; /* Start with red */
+    }
+    25% {
+        fill-opacity: 1; /* Fully opaque */
+        fill: green; /* Change to green */
+    }
+    50% {
+        fill-opacity: 1; /* Fully opaque */
+        fill: yellow; /* Change to yellow */
+    }
+    75% {
+        fill-opacity: 1; /* Fully opaque */
+        fill: blue; /* Change to blue */
+    }
+    100% {
+        fill-opacity: 1; /* Fully opaque */
+        fill: red; /* Loop back to red */
+    }
+}
+
+
+/* Answer Button Styling */
+.option-button {
+    display: block;
+    padding: 10px 15px;
+    margin-top: 8px;
+    background: linear-gradient(145deg, #ffffff, #e0e0e0);
+    border: 2px solid #151515;
+    color: #151515;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    cursor: pointer;
+    border-radius: 8px;
+    transition: all 0.4s ease;
+    box-shadow: 3px 3px 10px rgba(0, 0, 0, 0.2), -3px -3px 10px rgba(255, 255, 255, 0.4);
+}
+
+.option-button:hover, .option-button.selected {
+    border-color: #4835ab;
+    background: linear-gradient(145deg, #6fa7b8, #7fb9cc);
+    color: #2712ca;
+    box-shadow: 0 0 15px rgba(72, 53, 171, 0.6);
+    transform: scale(1.05);
+}
+
+/* Check Answer Button */
+.check-answer-button {
+    background-color: #9ba4db;
+    color: #0e0e0f;
+    border: 2px solid transparent;
+    padding: 10px 20px;
+    cursor: pointer;
+    margin-top: 12px;
+    border-radius: 6px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    transition: all 0.4s ease;
+    box-shadow: 3px 3px 8px rgba(0, 0, 0, 0.15);
+}
+
+.check-answer-button:hover {
+    background-color: #420fd1;
+    color: #ffffff;
+    box-shadow: 0 0 12px rgba(66, 15, 209, 0.6);
+    transform: scale(1.05);
+}
+
+/* Score Display */
+#score {
+    position: absolute;
+    bottom: 10px;
+    left: 10px;
+    background: rgba(79, 107, 155, 0.9); /* Slightly more opaque for visibility */
+    padding: 5px 5px; /* Increased padding for a larger area */
+    border-radius: 10px; /* More rounded corners */
+    font-size: 0.9em; /* Increased font size for better readability */
+    color: #fff; /* White text for contrast */
+    z-index: 1000;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3); /* Soft shadow for depth */
+    border: 2px solid #6fa7b8; /* Border with a contrasting color */
+    transition: transform 0.3s ease, background 0.3s ease; /* Transition effects for hover */
+}
+
+/* Animation */
+@keyframes pulse {
+    0% {
+        transform: scale(1);
+    }
+    50% {
+        transform: scale(1.05);
+    }
+    100% {
+        transform: scale(1);
+    }
+}
+
+/* Add animation on load */
+#score {
+    animation: pulse 2s infinite; /* Pulsing effect */
+}
+
+.leaflet-control-layers {
+    position: absolute;
+    top: 60px; /* Adjust to position it down */
+    right: 1px; /* Adjust to position it left */
+    background: rgba(77, 11, 11, 0.8); /* Slightly transparent background */
+    border-radius: 15px; /* Rounded corners */
+    padding: 0.5px; /* Some padding */
+    box-shadow: 0 1px 5px rgba(0, 0, 0, 0.65); /* Shadow for depth */
+    z-index: 1000; /* Ensure it appears above other elements */
+    width: auto;
+    height: auto;
+    opacity: 0.8;
+}
+
+.leaflet-control-layers label {
+    color: rgb(10, 10, 10); /* Change text color for visibility */
+    font-weight: none; /* Make text bold */
+}
+
+/* Style the inputs (checkboxes) within the control */
+.leaflet-control-layers input {
+    margin-right: 1px; /* Space between checkbox and label */
+}
+
+

@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <!-- Meta tags for character encoding, viewport settings, and description -->
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Explore Melbourne City through an interactive quiz map game. Answer questions and score points by visiting landmarks!">
+
+    <!-- Linking external stylesheets -->
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/leaflet.locatecontrol@0.81.1/dist/L.Control.Locate.min.css" />
+    <link rel="icon" type="image/x-icon" href="favicon.png">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/gokertanrisever/leaflet-ruler@master/src/leaflet-ruler.css"/>
+
+    <!-- Title of the Game -->
+    <title>Melbourne City Explorer Quiz</title>
+
+</head>
+<body>
+    <!-- Game Title -->
+    <div id="game-title">Melbourne City Explorer Quiz</div>
+
+    <!-- Modal Trigger Button -->
+    <button id="openModal">
+        <img src="rules.png" alt="Game Guide" class="button-image" />    
+    </button>
+
+    <!-- Modal for Game Instructions -->
+    <div class="modal" id="modal">
+        <div class="modal-header">
+            <div class="title">Follow these Instructions to Play</div>
+            <button class="close-button" aria-label="Close">&times;</button>
+        </div>
+        <div class="modal-body">
+            <ol style="text-align: left; font-size: 13.5px;">
+                <li><strong>MAP NAVIGATION:</strong> Use the map to navigate towards the Markers.</li>
+                <li><strong>CHALLENGE:</strong> Answer questions at each location and explore.</li>
+                <li><strong>POINTS:</strong> Successfully complete challenges to earn points. You get 10 points for every quiz question. A total of 10 quizzes for 100 points.</li>
+                <li><strong>NOTE:</strong> You must be within 25 meters of a location to activate its quest.</li>
+            </ol>
+        </div>
+    </div>
+
+    <div id="overlay"></div>
+    
+    <!-- Scoreboard to display score -->
+    <div id="score">Score: 0 | Completed: 0/10</div>
+    
+    <!-- Map display container -->
+    <div id="mapid"></div>
+    
+    <!-- Linking the external Leaflet JavaScript files -->
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/gokertanrisever/leaflet-ruler@master/src/leaflet-ruler.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/leaflet.locatecontrol@0.81.1/dist/L.Control.Locate.min.js"></script>
+    <script src="script.js"></script> 
+
+</body>
+</html>
