@@ -157,54 +157,66 @@ window.onload = function () {
     }).addTo(map);
 
     // Marker popup logic
-    var currentMarker, currentCircle;
-    var popupManuallyClosed = false;
+var currentMarker, currentCircle;
+var popupManuallyClosed = false;
+var isFirstUpdate = true; // Track if it's the first location update
 
-    // Show latitude, longitude, and accuracy in a popup when location is found
-    map.on('locationfound', function (e) {
-        // Clear previous location data if it exists
+// Show latitude, longitude, and accuracy in a popup when location is found
+map.on('locationfound', function (e) {
+    // If the popup was manually closed, do not create or open it again
+    if (popupManuallyClosed) {
+        // Update marker position
         if (currentMarker) {
-            map.removeLayer(currentMarker);
+            currentMarker.setLatLng(e.latlng);
+            currentCircle.setLatLng(e.latlng); // Update circle position
         }
-        if (currentCircle) {
-            map.removeLayer(currentCircle);
-        }
+        return; // Exit the function
+    }
 
-        var radius = e.accuracy / 2; // Radius of the accuracy circle
+    // Clear previous location data if it exists
+    if (currentMarker) {
+        map.removeLayer(currentMarker);
+    }
+    if (currentCircle) {
+        map.removeLayer(currentCircle);
+    }
 
-        // Format latitude, longitude, and accuracy to five decimal places
-        var lat = e.latitude.toFixed(5);
-        var lng = e.longitude.toFixed(5);
-        var accuracy = radius.toFixed(5);
+    var radius = e.accuracy / 2; // Radius of the accuracy circle
 
-        // Create a new marker for the current location
-        currentMarker = L.marker(e.latlng).addTo(map)
-            .bindPopup(`You are here!<br>Latitude: ${lat}<br>Longitude: ${lng}<br>Accuracy: ${accuracy} meters`, { closeOnClick: false, autoClose: false });
+    // Format latitude, longitude, and accuracy to five decimal places
+    var lat = e.latitude.toFixed(5);
+    var lng = e.longitude.toFixed(5);
+    var accuracy = radius.toFixed(5);
 
-        // Open the popup automatically on the first location update
-        if (!popupManuallyClosed) {
-            currentMarker.openPopup();
-        }
+    // Create a new marker for the current location
+    currentMarker = L.marker(e.latlng).addTo(map)
+        .bindPopup(`You are here!<br>Latitude: ${lat}<br>Longitude: ${lng}<br>Accuracy: ${accuracy} meters`, { closeOnClick: false, autoClose: false });
 
-        // Event to set the popup as manually closed when closed by user
-        currentMarker.getPopup().on('remove', function () {
-            popupManuallyClosed = true;
-        });
+    // Open the popup automatically on the first location update
+    if (isFirstUpdate) {
+        currentMarker.openPopup();
+        isFirstUpdate = false; // Mark that the first update has been handled
+    }
 
-        // Add click event to open the popup when the marker is clicked, resetting manual close tracking
-        currentMarker.on('click', function () {
-            this.openPopup();
-            popupManuallyClosed = false; // Allow the popup to stay open on updates again
-        });
-
-        // Create a new circle to represent the accuracy of the location
-        currentCircle = L.circle(e.latlng, radius).addTo(map);
+    // Event to set the popup as manually closed when closed by the user
+    currentMarker.getPopup().on('remove', function () {
+        popupManuallyClosed = true;
     });
 
-    // Handle location error
-    map.on('locationerror', function (e) {
-        alert(e.message);
+    // Add click event to open the popup when the marker is clicked
+    currentMarker.on('click', function () {
+        this.openPopup();
+        popupManuallyClosed = false; // Allow reopening the popup
     });
+
+    // Create a new circle to represent the accuracy of the location
+    currentCircle = L.circle(e.latlng, radius).addTo(map);
+});
+
+// Handle location error
+map.on('locationerror', function (e) {
+    alert(e.message);
+});
 
 
     //Ruler
