@@ -197,7 +197,7 @@ window.onload = function () {
 
 
     //Ruler
-    var options = {
+    /*var options = {
         position: 'topleft',
         lengthUnit: {
             label: 'Distance',
@@ -208,17 +208,7 @@ window.onload = function () {
     };
     L.control.ruler(options).addTo(map);
 
-    // Add the ruler control to the map
-    var rulerControl = L.control.ruler(options).addTo(map);
-
-    // Toggle ruler control on click
-    document.querySelector('.leaflet-control-ruler').addEventListener('click', function () {
-        if (rulerControl._map) {
-            rulerControl.remove();
-        } else {
-            rulerControl.addTo(map);
-        }
-    });
+    */
 
 
     // Initialize an object to keep track of the total score
