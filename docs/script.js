@@ -179,7 +179,7 @@ window.onload = function () {
 
         // Create a new marker and circle for the current location
         currentMarker = L.marker(e.latlng).addTo(map)
-            .bindPopup(`You are here!<br>Latitude: ${lat}<br>Longitude: ${lng}<br>Accuracy: ${accuracy} meters`)
+            .bindPopup(`You are here!<br>Latitude: ${lat}<br>Longitude: ${lng}<br>Accuracy: ${accuracy} meters`, { closeOnClick: false });
 
         // Add click event to open the popup when the marker is clicked
         currentMarker.on('click', function () {
