@@ -140,7 +140,38 @@ window.onload = function () {
     map.addControl(new homeButton());
 
     // Add locate control
-    L.control.locate().addTo(map);
+    //L.control.locate().addTo(map);
+    // Add Locate control to map
+    var locateControl = L.control.locate({
+        position: 'topleft',  // Position of the locate button
+        setView: true,        // Automatically set the map view to the user's location
+        flyTo: true,          // Smooth zoom to the location
+        drawCircle: true,     // Draw a circle around the user's location
+        keepCurrentZoomLevel: false, // Adjust to zoom level specified in setView
+        locateOptions: {
+            enableHighAccuracy: true, // Enable high accuracy
+            watch: true,              // Continuously track the user's location
+            maximumAge: 10000,        // Cache location for 10 seconds
+            timeout: 10000            // Timeout after 10 seconds
+        }
+    }).addTo(map);
+
+    // Show latitude, longitude, and accuracy in a popup when location is found
+    map.on('locationfound', function (e) {
+        var radius = e.accuracy / 2; // Radius of the accuracy circle
+
+        // Create a circle to represent the accuracy of the location
+        L.marker(e.latlng).addTo(map)
+            .bindPopup(`You are here!<br>Latitude: ${e.latitude}<br>Longitude: ${e.longitude}<br>Accuracy: ${radius} meters`)
+            .openPopup();
+
+        L.circle(e.latlng, radius).addTo(map);
+    });
+
+    // Handle location error
+    map.on('locationerror', function (e) {
+        alert(e.message);
+    });
 
     //Ruler
     var options = {
