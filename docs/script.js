@@ -156,9 +156,10 @@ window.onload = function () {
         }
     }).addTo(map);
 
-    // Initialize variables to track marker and circle
+    // Initialize variables to track marker, circle, and manual close status
     let currentMarker;
     let currentCircle;
+    let popupManuallyClosed = false; // Flag to track manual closure of the popup
 
     // Show latitude, longitude, and accuracy in a popup when location is found
     map.on('locationfound', function (e) {
@@ -184,12 +185,20 @@ window.onload = function () {
                 autoClose: false       // Popup won't auto-close when other popups are opened
             });
 
-        // Open the popup initially
-        currentMarker.openPopup();
+        // Open the popup automatically on the first location update if not manually closed
+        if (!popupManuallyClosed) {
+            currentMarker.openPopup();
+        }
 
-        // Add click event to reopen popup if it was manually closed and marker is clicked
+        // Add an event listener to track manual closure of the popup
+        currentMarker.getPopup().on('remove', function () {
+            popupManuallyClosed = true; // Set flag to true if manually closed
+        });
+
+        // Add click event to reopen the popup if manually closed and marker is clicked
         currentMarker.on('click', function () {
             this.openPopup();
+            popupManuallyClosed = false; // Reset flag to allow continuous updates with popup open
         });
 
         // Create a new circle to represent the accuracy of the location
@@ -200,7 +209,6 @@ window.onload = function () {
     map.on('locationerror', function (e) {
         alert(e.message);
     });
-
 
 
     //Ruler
