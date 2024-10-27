@@ -200,12 +200,26 @@ window.onload = function () {
     var options = {
         position: 'topleft',
         lengthUnit: {
+            label: 'Distance',
             factor: 1000,
             display: 'meters',
             decimal: 2,
         },
     };
     L.control.ruler(options).addTo(map);
+
+    // Add the ruler control to the map
+    var rulerControl = L.control.ruler(options).addTo(map);
+
+    // Toggle ruler control on click
+    document.querySelector('.leaflet-control-ruler').addEventListener('click', function () {
+        if (rulerControl._map) {
+            rulerControl.remove();
+        } else {
+            rulerControl.addTo(map);
+        }
+    });
+
 
     // Initialize an object to keep track of the total score
     const totalScore = { value: 0 };
