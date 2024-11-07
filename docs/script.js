@@ -157,72 +157,72 @@ window.onload = function () {
     }).addTo(map);
 
     // Marker popup logic
-var currentMarker, currentCircle;
-var popupManuallyClosed = false;
-var isFirstUpdate = true; // Track if it's the first location update
+    var currentMarker, currentCircle;
+    var popupManuallyClosed = false;
+    var isFirstUpdate = true; // Track if it's the first location update
 
-// Show latitude, longitude, and accuracy in a popup when location is found
-map.on('locationfound', function (e) {
-    var radius = e.accuracy / 2; // Radius of the accuracy circle
+    // Show latitude, longitude, and accuracy in a popup when location is found
+    map.on('locationfound', function (e) {
+        var radius = e.accuracy / 2; // Radius of the accuracy circle
 
-    // Format latitude, longitude, and accuracy to five decimal places
-    var lat = e.latitude.toFixed(5);
-    var lng = e.longitude.toFixed(5);
-    var accuracy = radius.toFixed(5);
+        // Format latitude, longitude, and accuracy to five decimal places
+        var lat = e.latitude.toFixed(5);
+        var lng = e.longitude.toFixed(5);
+        var accuracy = radius.toFixed(5);
 
-    // If the popup was manually closed, do not create or open it again
-    if (popupManuallyClosed) {
+        // If the popup was manually closed, do not create or open it again
+        if (popupManuallyClosed) {
+            if (currentMarker) {
+                // Update marker position without removing it
+                currentMarker.setLatLng(e.latlng);
+                currentCircle.setLatLng(e.latlng); // Update circle position
+            }
+            return; // Exit the function
+        }
+
+        // Clear previous location data if it exists
         if (currentMarker) {
-            // Update marker position without removing it
-            currentMarker.setLatLng(e.latlng);
-            currentCircle.setLatLng(e.latlng); // Update circle position
+            currentMarker.setLatLng(e.latlng); // Update the position of the existing marker
+        } else {
+            // Create a new marker for the current location if it doesn't exist
+            currentMarker = L.marker(e.latlng).addTo(map)
+                .bindPopup(`You are here!<br>Latitude: ${lat}<br>Longitude: ${lng}<br>Accuracy: ${accuracy} meters`, { closeOnClick: false, autoClose: false });
+
+            // Open the popup automatically on the first location update
+            if (isFirstUpdate) {
+                currentMarker.openPopup();
+                isFirstUpdate = false; // Mark that the first update has been handled
+            }
+
+            // Event to set the popup as manually closed when closed by the user
+            currentMarker.getPopup().on('remove', function () {
+                popupManuallyClosed = true;
+            });
+
+            // Add click event to open the popup when the marker is clicked
+            currentMarker.on('click', function () {
+                this.openPopup();
+                popupManuallyClosed = false; // Allow reopening the popup
+            });
         }
-        return; // Exit the function
-    }
 
-    // Clear previous location data if it exists
-    if (currentMarker) {
-        currentMarker.setLatLng(e.latlng); // Update the position of the existing marker
-    } else {
-        // Create a new marker for the current location if it doesn't exist
-        currentMarker = L.marker(e.latlng).addTo(map)
-            .bindPopup(`You are here!<br>Latitude: ${lat}<br>Longitude: ${lng}<br>Accuracy: ${accuracy} meters`, { closeOnClick: false, autoClose: false });
-
-        // Open the popup automatically on the first location update
-        if (isFirstUpdate) {
-            currentMarker.openPopup();
-            isFirstUpdate = false; // Mark that the first update has been handled
+        // Create a new circle to represent the accuracy of the location
+        if (currentCircle) {
+            currentCircle.setLatLng(e.latlng); // Update existing circle position
+        } else {
+            currentCircle = L.circle(e.latlng, radius).addTo(map);
         }
 
-        // Event to set the popup as manually closed when closed by the user
-        currentMarker.getPopup().on('remove', function () {
-            popupManuallyClosed = true;
-        });
+        // Update popup content if the popup is not manually closed
+        if (!popupManuallyClosed) {
+            currentMarker.getPopup().setContent(`You are here!<br>Latitude: ${lat}<br>Longitude: ${lng}<br>Accuracy: ${accuracy} meters`);
+        }
+    });
 
-        // Add click event to open the popup when the marker is clicked
-        currentMarker.on('click', function () {
-            this.openPopup();
-            popupManuallyClosed = false; // Allow reopening the popup
-        });
-    }
-
-    // Create a new circle to represent the accuracy of the location
-    if (currentCircle) {
-        currentCircle.setLatLng(e.latlng); // Update existing circle position
-    } else {
-        currentCircle = L.circle(e.latlng, radius).addTo(map);
-    }
-
-    // Update popup content if the popup is not manually closed
-    if (!popupManuallyClosed) {
-        currentMarker.getPopup().setContent(`You are here!<br>Latitude: ${lat}<br>Longitude: ${lng}<br>Accuracy: ${accuracy} meters`);
-    }
-});
-
-// Handle location error
-map.on('locationerror', function (e) {
-    alert(e.message);
-});
+    // Handle location error
+    map.on('locationerror', function (e) {
+        alert(e.message);
+    });
 
 
     //Ruler
